@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center mb-5" style="color:#2E8B57;">📚 Liste des Auteurs</h1>
+
+    {% if authors is not defined or authors is empty %}
+        <div class="alert alert-warning text-center">
+            Aucun auteur trouvé.
+        </div>
+    {% else %}
+        <div class="row justify-content-center">
+            {% for author in authors %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow border-0 rounded-3 h-100">
+                        <img src="{{ asset(author.picture) }}" class="card-img-top rounded-top" alt="{{ author.username }}" style="height:250px; object-fit:cover;">
+                        <div class="card-body text-center">
+                            <h5 class="card-title" style="color:#006400;">{{ author.username|upper }}</h5>
+                            <p class="text-muted mb-1">📧 {{ author.email }}</p>
+                            <p class="mb-2">📖 {{ author.nb_books }} livres</p>
+                            <a href="{{ path('app_author_details', {'id': author.id}) }}" class="btn btn-outline-success btn-sm">
+                                ➡ Voir détails
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <div class="badge bg-success fs-6 me-3">
+                Nombre d'auteurs : {{ authors|length }}
+            </div>
+            <div class="badge bg-primary fs-6">
+                Total des livres : {{ authors|map(a => a.nb_books)|reduce((carry, v) => carry + v) }}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

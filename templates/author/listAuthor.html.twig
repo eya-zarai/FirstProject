@@ -1,0 +1,15 @@
+<table>
+<tr>
+<td> Id </td>
+<td> username </td>
+<td> email </td>
+<td> age</td>
+</tr>
+{%for l in list %}
+<tr>
+<td>{{l.id}}</td>
+<td>{{l.username}}</td>
+<td>{{l.email}}</td>
+<td>{{l.age}}</td>
+{%endfor%}
+</table>

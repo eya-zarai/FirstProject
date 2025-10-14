@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Livres{% endblock %}
+
+{% block body %}
+<h1>Liste des Livres</h1>
+
+{# Zone de recherche par titre #}
+<form method="get" action="{{ path('search_book') }}">
+    <input type="text" name="ref" placeholder="Rechercher par titre..." value="{{ app.request.get('ref') }}">
+    <button type="submit">Rechercher</button>
+</form>
+
+<hr>
+
+{# Statistiques des livres publiés/non publiés #}
+{% if publishedCount is defined and unpublishedCount is defined %}
+    <p>📚 Publiés : {{ publishedCount }} | Non publiés : {{ unpublishedCount }}</p>
+{% endif %}
+
+{# Liste complète des livres #}
+{% if books is defined and books is not empty %}
+    <h2>Liste complète des livres</h2>
+    <table border="1" cellpadding="8" cellspacing="0">
+        <tr style="background-color:#f2f2f2;">
+            <th>Titre</th>
+            <th>Auteur</th>
+            <th>Catégorie</th>
+            <th>Date de publication</th>
+            <th>Actions</th>
+        </tr>
+        {% for book in books %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author.username }}</td>
+                <td>{{ book.category }}</td>
+                <td>{{ book.publicationDate|date('Y-m-d') }}</td>
+                <td>
+                    <a href="{{ path('book_edit', {'id': book.id}) }}">Éditer</a>
+                    <a href="{{ path('book_delete', {'id': book.id}) }}">Supprimer</a>
+                    <a href="{{ path('book_show', {'id': book.id}) }}">Voir</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Aucun livre trouvé.</p>
+{% endif %}
+
+<hr>
+
+{# Tableau des livres publiés avant 2023 dont l'auteur a plus de 10 livres #}
+<h2>Livres publiés avant 2023 dont l'auteur a plus de 10 livres</h2>
+
+{% if oldBooks is defined and oldBooks is not empty %}
+    <table border="1" cellpadding="8" cellspacing="0">
+        <tr style="background-color:#f9f9f9;">
+            <th>Titre</th>
+            <th>Auteur</th>
+            <th>Catégorie</th>
+            <th>Date de publication</th>
+        </tr>
+        {% for book in oldBooks %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author.username }}</td>
+                <td>{{ book.category }}</td>
+                <td>{{ book.publicationDate|date('Y-m-d') }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Aucun livre trouvé.</p>
+{% endif %}
+
+{% endblock %}

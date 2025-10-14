@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un livre{% endblock %}
+
+{% block body %}
+<h1>Ajouter un livre</h1>
+
+{{ form_start(form) }}
+    {{ form_row(form.title) }}
+    {{ form_row(form.category) }}
+    {{ form_row(form.author) }}
+    {{ form_row(form.publicationDate) }}
+    {{ form_row(form.nbBooks) }} {# Champ pour le nombre de livres #}
+
+    <button class="btn">Ajouter</button>
+{{ form_end(form) }}
+
+{% endblock %}

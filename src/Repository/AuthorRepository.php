@@ -40,4 +40,29 @@ class AuthorRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+
+
+
+
+
+    /*public function findAllAuthorsQB():mixed{
+        $req=$this->createQueryBuilder('p')
+        ->andWhere('p.usernamen LIKE :usernname')
+        ->setParameter('username', '%a')
+        ->orderBy('p.email','DESC')
+        ->getQuery()->getResult();
+        return $req;
+    }*/
+    
+
+public function listAuthorByEmail(): array
+{
+    return $this->createQueryBuilder('a')
+        ->orderBy('a.email', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
+
+
 }

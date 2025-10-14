@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\AuthorRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use App\Repository\AuthorRepository;
 
 #[ORM\Entity(repositoryClass: AuthorRepository::class)]
 class Author
@@ -16,11 +18,18 @@ class Author
     #[ORM\Column(length: 255)]
     private ?string $username = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $email = null;
+    #[ORM\Column(type: "integer")]
+    private ?int $nbBooks = 0; 
+    
+    // <- compteur de livres
 
-    #[ORM\Column]
-    private ?int $age = null;
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Book::class)]
+    private Collection $books;
+
+    public function __construct()
+    {
+        $this->books = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -32,34 +41,49 @@ class Author
         return $this->username;
     }
 
-    public function setUsername(string $username): static
+    public function setUsername(string $username): self
     {
         $this->username = $username;
-
         return $this;
     }
 
-    public function getEmail(): ?string
+    public function getNbBooks(): int
     {
-        return $this->email;
+        return $this->nbBooks;
     }
 
-    public function setEmail(string $email): static
+    public function setNbBooks(int $nbBooks): self
     {
-        $this->email = $email;
-
+        $this->nbBooks = $nbBooks;
         return $this;
     }
 
-    public function getAge(): ?int
+    /**
+     * @return Collection|Book[]
+     */
+    public function getBooks(): Collection
     {
-        return $this->age;
+        return $this->books;
     }
 
-    public function setAge(int $age): static
+    public function addBook(Book $book): self
     {
-        $this->age = $age;
+        if (!$this->books->contains($book)) {
+            $this->books[] = $book;
+            $book->setAuthor($this);
+            $this->nbBooks++;
+        }
+        return $this;
+    }
 
+    public function removeBook(Book $book): self
+    {
+        if ($this->books->removeElement($book)) {
+            if ($book->getAuthor() === $this) {
+                $book->setAuthor(null);
+                $this->nbBooks = max(0, $this->nbBooks - 1);
+            }
+        }
         return $this;
     }
 }
